@@ -5,11 +5,13 @@ from Loss import *
 from Update import *
 from Layer import *
 from Error_plots import *
+from Regularize import *
 
 
 
 class Model:
-    def __init__(self, eta, alpha, layers, update, loss, metric):
+    def __init__(self, eta, alpha, lamb, layers, update, loss, metric, regularizer):
+        self.lamb = lamb
         self.layers = layers
         self.eta = eta
         self.alpha = alpha
@@ -22,6 +24,11 @@ class Model:
         loss_metric_map = {
             "mse": mse,
             "mee": mee
+        }
+
+        regularizer_map = {
+            "l1": lambda: l1(self.lamb),
+            "l2": lambda: l2(self.lamb)
         }
 
         if isinstance(update, str):
@@ -50,6 +57,15 @@ class Model:
                 raise ValueError(f"Unknown Metric '{metric}'. Available: {list(loss_metric_map.keys())}")
         else:
             raise BaseException("metric must be a string")
+        
+        if isinstance(regularizer, str):
+            try:
+                self.regularizer = regularizer_map[regularizer.lower()]()
+                print(f"Regularize algorithm set to: {self.regularizer}")
+            except KeyError:
+                raise ValueError(f"Unknown Regularizer '{regularizer}'. Available: {list(regularizer_map.keys())}")
+        else:
+            raise BaseException("Regularizer must be a string")
 
     def add_layer(self, layer):
         return self.layers.append(layer)
@@ -78,7 +94,7 @@ class Model:
 
         # Aggiornamento Pesi
         for layer in self.layers:
-            self.update.update(layer)
+            self.update.update(layer, self.regularizer)
             
 
     def fit(self, epochs, x, y, x_val, y_val, batch_size):
@@ -92,7 +108,10 @@ class Model:
         X_loc = x.copy()
         Y_loc = y.copy()
         err = []
+        val = [1000]
         best_val_loss = float('inf')
+        Flag = False
+        threshold = 0.5
 
         for epoch in range(epochs+1):
             for k in range(0, n_train, batch_size):
@@ -100,29 +119,35 @@ class Model:
                 Y_batch = Y_loc[:, k : k + batch_size]
                 
                 self.train(X_batch, Y_batch, X_batch.shape[1])
-            if ((epoch % 50) == 0):
-                #Shuffling congiunto di X_train e Y_train
+            
+            if ((epoch % 5) == 0):
                 indices = np.arange(x.shape[1])
                 np.random.shuffle(indices)
                 X_loc = X_loc[:, indices]
                 Y_loc = Y_loc[:, indices]
 
-                o = self.forward_pass_model(x)
-
-                e = self.metric.forward_loss(o, y)
-                err.append(e)
-                print(f"Epoch: {epoch}/{epochs}")
-                print("Errore: ", e)
-
             val_loss = 0
-            batches = 0
             for l in range(0, n_val, batch_size):
                 X_batch = x_val[:, l : l + batch_size]
                 Y_batch = y_val[:, l : l + batch_size]
                 val_loss += self.evaluate(X_batch, Y_batch)
-                batches += 1
 
-            avg_val_loss = val_loss / batches
+            if batch_size < n_val:
+                avg_val_loss = val_loss / (n_val / batch_size)
+            else:
+                avg_val_loss = val_loss
+
+            if ((epoch % 50) == 0):
+                self.eta *= 0.9
+                o = self.forward_pass_model(x)
+                e = self.metric.forward_loss(o, y)
+                print(f"Epoch: {epoch}/{epochs}")
+                print("Errore: ", e)
+            
+            if avg_val_loss - val[-1] > threshold:
+                Flag = True
+                print(f'----GRAFICO BRUTTO----')
+                break
 
             if avg_val_loss < best_val_loss:
                 best_val_loss = avg_val_loss
@@ -133,9 +158,18 @@ class Model:
                 with open(full_path, 'wb') as file:  # 'wb' sta per Write Binary
                     pickle.dump(data_to_save, file)
 
-        #plot = default_plot()
-        #plot.plot(epochs, err)
-        return best_val_loss
+            o = self.forward_pass_model(x)
+            e = self.metric.forward_loss(o, y)
+            err.append(e)
+            val.append(avg_val_loss)
+        
+        val.pop(0)
+        if not Flag:
+            print(f"-------Best Val for this Configuration: {best_val_loss}")
+
+        #plot = val_err_plot()
+        #plot.plot(val, err)
+        return best_val_loss, Flag
     
     def evaluate(self, x, y):
         o = self.forward_pass_model(x)

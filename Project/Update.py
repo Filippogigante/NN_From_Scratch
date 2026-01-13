@@ -1,19 +1,20 @@
 import numpy as np
+from Regularize import *
 
 class update_params:
-    def update(self, x):
+    def update(self, x, y):
         raise NotImplementedError 
 
 class std_update(update_params):
     def __init__(self, eta):
         self.eta = eta
 
-    def update(self, Layer):
+    def update(self, Layer, regularizer):
         dW, d_bias = Layer.get_deltas()
         W = Layer.get_weights()
         b = Layer.get_bias()
 
-        W = W - self.eta * dW
+        W = W - self.eta * (dW + regularizer.bp(W))
         b = b - self.eta * d_bias
         
         Layer.set_weights(W)
@@ -26,14 +27,14 @@ class momentum_update(update_params):
         self.eta = eta
         self.alpha = alpha
 
-    def update(self, Layer):
+    def update(self, Layer, regularizer):
         dW, d_bias = Layer.get_deltas()
         W = Layer.get_weights()
         b = Layer.get_bias()
         vW = Layer.get_vW()
         vb = Layer.get_vb()
 
-        vW = self.alpha * vW + (1 - self.alpha) * dW
+        vW = self.alpha * vW + (1 - self.alpha) * (dW + regularizer.bp(W))
         vb = self.alpha * vb + (1 - self.alpha) * d_bias
         W = W - self.eta * vW
         b = b - self.eta * vb

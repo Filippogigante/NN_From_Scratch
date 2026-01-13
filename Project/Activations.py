@@ -23,7 +23,7 @@ class tanh(ActivationFunctions):
         return np.tanh(x)
     
     def backward(self, x):
-        return 1 - x ** 2.0
+        return 1 - self.forward(x) ** 2.0
     
 class identity(ActivationFunctions):
 

@@ -25,7 +25,7 @@ print(data_test.shape)
 X_test = data_test[1:13]
 X_test = (X_test - X_mean) / (X_std + 1e-8)'''  
 
-layers = [Layer(X_train.shape[0], 32, "relu", "he"), Layer(32, 12, "relu", "he"), Layer(12, 4, "identity", "he")]
-model = Model(eta=0.001, alpha=0.99, layers=layers, update="momentum", loss="mse", metric="mee")
-#batch_size = int(X_train.shape[1] / 10)
-model.fit(500, X_train, Y_train, X_test, Y_test, batch_size=6)
+layers = [Layer(X_train.shape[0], 32, "relu", "he"), Layer(32, 16, "relu", "he"), Layer(16, 4, "identity", "he")]
+model = Model(eta=0.0001, alpha=0.80, lamb=1e-5, layers=layers, update="momentum", loss="mse", metric="mee", regularizer="l2")
+
+model.fit(6000, X_train, Y_train, X_test, Y_test, batch_size=140)
