@@ -99,7 +99,7 @@ class Model:
 
         #folder_path = r"\Users\filippo\Desktop\data_weights"
         #file_name = "best_weights.pkl"
-        full_path = r"/Users/filippo/desktop/NiralNeuorcFromScretch-jaeger/data_weights/best_weights.pkl"
+        full_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\best_weights.pkl"
 
         n_train = x.shape[1]
         n_val = x_val.shape[1]
@@ -134,9 +134,10 @@ class Model:
                 avg_val_loss = val_loss / (n_val / batch_size)
             else:
                 avg_val_loss = val_loss
-
-            if ((epoch % 50) == 0):
-                self.eta *= 0.9
+                
+            if ((epoch % 500) == 0):
+                self.eta *= 0.95
+                self.update.set_eta(self.eta)
                 o = self.forward_pass_model(x)
                 e = self.metric.forward_loss(o, y)
                 print(f"Epoch: {epoch}/{epochs}")
@@ -144,9 +145,8 @@ class Model:
             
             if avg_val_loss - val[-1] > threshold:
                 Flag = True
-                print(f'----GRAFICO BRUTTO----')
+                print(f'----GRAFICO VENUTO MALE (Validation Error irregolare)----')
                 break
-            
             
             if avg_val_loss < best_val_loss:
                 best_val_loss = avg_val_loss
@@ -187,7 +187,8 @@ class Model:
     def all_layers_bias(self):
         b = []
         for layer in self.layers:
-            b.append(layer.get_bias())
+            if layer.get_type() != "dropout":
+                b.append(layer.get_bias())
         return b
 
     def summary(self):

@@ -23,7 +23,23 @@ class tanh(ActivationFunctions):
         return np.tanh(x)
     
     def backward(self, x):
-        return 1 - x ** 2.0
+        return 1 - self.forward(x) ** 2.0
+    
+class sigmoid(ActivationFunctions):
+
+    def forward(self, x):
+        return 1 / (1 + np.exp(-x))
+    
+    def backward(self, x):
+        return self.forward(x) * (1 - self.forward(x))
+    
+class softmax(ActivationFunctions):
+
+    def forward(self, x):
+        return np.exp(x) / (np.sum(np.exp(x), axis=0, keepdims=True))
+    
+    def backward(self, x):
+        return self.forward(x) * (1 - self.forward(x))
     
 class identity(ActivationFunctions):
 

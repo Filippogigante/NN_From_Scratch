@@ -7,6 +7,7 @@ from Error_plots import *
 import itertools
 from Logger import *
 import time
+from GridSearch import *
 
 #folder_path = r"\Users\filippo\Desktop\data_weights" #cartella dove vengono memorizzati i pesi 
 #original_file = "best_weights.pkl"
@@ -14,10 +15,9 @@ import time
 #os.path.join(folder_path, original_file)
 #data_test = np.loadtxt(r"\Users\nicol\Desktop\Universita\ML\cup_data\ML-CUP25-TS.csv", delimiter=",", skiprows=1)
 sys.stdout = logger()
-old_path = r"/Users/filippo/desktop/NiralNeuorcFromScretch-jaeger/data_weights/best_weights.pkl"
-new_path = r"/Users/filippo/desktop/NiralNeuorcFromScretch-jaeger/data_weights/global_best_weights.pkl"
-data = np.loadtxt(r"/Users/filippo/desktop/NiralNeuorcFromScretch-jaeger/Project/ML-CUP25-TR.csv", delimiter=",", skiprows=1)
-
+old_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\best_weights.pkl"
+new_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\global_best_weights.pkl"
+data = np.loadtxt(r"C:\Users\nicol\Desktop\Universita\ML\cup_data\ML-CUP25-TR.csv", delimiter=",", skiprows=1)
 
 m, n = data.shape
 #np.random.shuffle(data)
@@ -26,50 +26,42 @@ data_train = data[:300].T
 X_train = data_train[1:13]  # data_train è 500 x 17 non trasposta, la prima colonna è il pattern id, le ultime quattro colonne sono i labels
 X_mean = np.mean(X_train, axis=1, keepdims=True)
 X_std = np.std(X_train, axis=1, keepdims=True)
-#X_train = (X_train - X_mean) / (X_std + 1e-8)
+#X_train = (X_train - X_mean) \ (X_std + 1e-8)
 Y_train = data_train[13:17]
 
 data_val = data[300:400].T
 X_val = data_val[1:13]
-#X_val = (X_val - X_mean) / (X_std + 1e-8)
+#X_val = (X_val - X_mean) \ (X_std + 1e-8)
 Y_val = data_val[13:17]
 
 '''data_test = data_test.T
 print(data_test.shape)
 X_test = data_test[1:13]
-X_test = (X_test - X_mean) / (X_std + 1e-8)'''  
+X_test = (X_test - X_mean) \ (X_std + 1e-8)'''  
 
-'''param_grid = {"eta": [0.0005, 0.001, 0.005, 0.01],
-                "alpha": [0.95, 0.99],
-                "batch_size": [16, 32, 64, 128],
+param_grid = {"eta": [0.0005, 0.001, 0.005],
+                "alpha": [0.85, 0.95, 0.99],
+                "batch_size": [128, 400],
+                "regularizer":["l1", "l2"],
                 "update": ["standard", "momentum"],
-                "initializer": ["he"],
+                "initializer": ["he", "glorot"],
                 "activation": ["relu", "tanh"],
                 "hidden_architecture": [
                     (32,),          
                     (64,),
-                    (10, 6),                   
+                    (128, 64),                 
                     (64, 32),       
                     (32, 16),       
-                    (64, 32, 16)
+                    (32, 16, 8)
                 ],
-                "epochs": [2000, 4000]
-                 }'''
-
-param_grid = {"eta": [0.0001],
-                "alpha": [0.80],
-                "batch_size": [400, 128],
-                "update": ["momentum"],
-                "initializer": ["glorot"],
-                "activation": ["relu"],
-                "hidden_architecture": [
-                    (32,),      
-                    (32, 16),       
-                    #(64, 32, 16)
-                ],
-                "epochs": [12000]
+                "epochs": [8000]
                  }
 
+
+final_gridsearch = KfoldGridSearch(param_grid)
+final_gridsearch.compute_grid_search(data, k=5)
+
+'''
 keys = param_grid.keys()
 values = param_grid.values()
 combinations = list(itertools.product(*values))
@@ -126,4 +118,4 @@ print(f"Migliore Validation Loss: {global_best_val_loss}")
 print("========================================")
 
     #print(f"Validation Error: {model.evaluate(X_val, Y_val)}")
-
+'''

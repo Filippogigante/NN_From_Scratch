@@ -19,15 +19,21 @@ class Layer:
         self.d_bias = None
         self.net = None
         self.o = None
-
+        self.type = "dense"
+        
         activation_map = {
             "relu": relu,        
             "tanh": tanh,
-            "identity": identity
+            "identity": identity,
+            "sigmoid": sigmoid,
+            "softmax": softmax
         }
 
         initializer_map = {
-            "standard": std_initializer
+            "standard": std_initializer,
+            "gaussian": gaussian_initializer,
+            "he": he_initializer,
+            "glorot" : glorot_initializer
         }
 
         if isinstance(activation, str):
@@ -40,7 +46,7 @@ class Layer:
         
         if isinstance(initializer, str):
             try:
-                self.initializer = initializer_map[initializer.lower()]() 
+                self.initializer = initializer_map[initializer.lower()](self.dim_output, self.dim_input) 
             except KeyError:
                 raise ValueError(f"Attivazione '{initializer}' non supportata. Usa: {list(initializer_map.keys())}")
         else:
@@ -73,8 +79,8 @@ class Layer:
         self.vb = vb
 
     def forward_pass(self, input):
-        self.net = input.dot(self.W) + self.b
-        self.o = self.activation(self.net)
+        self.net = (self.W).dot(input) + self.b
+        self.o = self.activation.forward(self.net)
         return self.o
 
     def backward_pass(self, delta, input, m):
@@ -87,3 +93,6 @@ class Layer:
     
     def get_deltas(self):
         return self.dW, self.d_bias
+    
+    def get_type(self):
+        return self.type
