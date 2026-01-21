@@ -23,7 +23,9 @@ class Model:
 
         loss_metric_map = {
             "mse": mse,
-            "mee": mee
+            "mee": mee,
+            "binary_cross_entropy" : binary_cross_entropy,
+            "accuracy" : accuracy
         }
 
         regularizer_map = {
@@ -86,8 +88,9 @@ class Model:
 
         # Backprop
         delta = self.loss.backward_loss(layer_outputs[-1], y)
-        for inp, layer in zip(reversed(layer_inputs), reversed(self.layers)):
-            delta = layer.backward_pass(delta, inp, batch_size)
+        for i, (inp, layer) in enumerate(zip(reversed(layer_inputs), reversed(self.layers))):
+            skip = ((i == 0) and isinstance(layer, sigmoid))
+            delta = layer.backward_pass(delta, inp, batch_size, skip)
             
         # Aggiornamento Pesi
         for layer in self.layers:
@@ -135,9 +138,9 @@ class Model:
             else:
                 avg_val_loss = val_loss
                 
-            if ((epoch % 500) == 0):
-                self.eta *= 0.95
-                self.update.set_eta(self.eta)
+            if ((epoch % 5) == 0):
+                #self.eta *= 0.95
+                #self.update.set_eta(self.eta)
                 o = self.forward_pass_model(x)
                 e = self.metric.forward_loss(o, y)
                 print(f"Epoch: {epoch}/{epochs}")

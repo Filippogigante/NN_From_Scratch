@@ -4,12 +4,16 @@ from Model import *
 from Error_plots import *
 from Dropout import *
 
-data = np.loadtxt(r"C:\Users\nicol\Desktop\Universita\ML\cup_data\ML-CUP25-TR.csv", delimiter=",", skiprows=1)
-#data_test = np.loadtxt(r"\Users\nicol\Desktop\Universita\ML\cup_data\ML-CUP25-TS.csv", delimiter=",", skiprows=1)
-data_monk = np.loadtxt(r"C:\Users\nicol\Desktop\Universita\ML\monk_data\monks-1.train", dtype=int, usecols=range(7))
+#data = np.loadtxt(r"\Users/nicol/Desktop/Universita/ML/cup_data/ML-CUP25-TR.csv", delimiter=",", skiprows=1)
+#data_test = np.loadtxt(r"/Users/nicol/Desktop/Universita/ML/cup_data/ML-CUP25-TS.csv", delimiter=",", skiprows=1)
+#data_monk = np.loadtxt(r"/Users/filippo/desktop/NiralNeuorcFromScretch-jaeger/datasets/monks-1.train", dtype=int, usecols=range(7))
+
+
+data_monk = np.loadtxt(r"/Users/filippo/desktop/NiralNeuorcFromScretch-jaeger/datasets/monks-2.train", dtype=int, usecols=range(7))
+
 
 ## Monk-managemenent
-
+category_sizes_monk2 = [3, 3, 2, 3, 3, 2]
 category_sizes = [3, 3, 2, 3, 4, 2]
 def one_hot_encode(X, category_sizes):
     encoded_features = []
@@ -20,6 +24,33 @@ def one_hot_encode(X, category_sizes):
         encoded_features.append(one_hot)
 
     return np.hstack(encoded_features)
+
+
+#preprocessing monk1
+"""
+Y_monk = data_monk[:, 0]          # labels
+X_monk = data_monk[:, 1:]       # attributes
+
+X_encoded = one_hot_encode(X_monk, category_sizes)
+Y_monk = Y_monk.reshape(-1, 1)
+Y_monk = Y_monk.astype(int)
+
+# Shuffle the dataset
+indices = np.random.permutation(X_encoded.shape[0])
+X_encoded = X_encoded[indices]
+Y_monk = Y_monk[indices]
+
+split = int(0.8 * X_encoded.shape[0])
+
+X_train_monk, X_val_monk = X_encoded[:split], X_encoded[split:]
+Y_train_monk, Y_val_monk = Y_monk[:split], Y_monk[split:]
+
+X_train_monk = X_train_monk.T
+Y_train_monk = Y_train_monk.T
+X_val_monk = X_val_monk.T
+Y_val_monk = Y_val_monk.T
+"""
+#preprocessing monk2
 
 Y_monk = data_monk[:, 0]          # labels
 X_monk = data_monk[:, 1:]       # attributes
@@ -43,8 +74,9 @@ Y_train_monk = Y_train_monk.T
 X_val_monk = X_val_monk.T
 Y_val_monk = Y_val_monk.T
 
-## Cup-management
 
+## Cup-management
+"""
 m, n = data.shape
 #np.random.shuffle(data)
 
@@ -67,7 +99,7 @@ data_test_real = data[400:].T
 X_test_real = data_test_real[1:13]
 #X_test = (X_test - X_mean) \ (X_std + 1e-8)
 Y_test_real = data_test_real[13:17]
-
+"""
 '''data_test = data_test.T
 print(data_test.shape)
 X_test = data_test[1:13]
@@ -119,7 +151,7 @@ same = all(
 print("Weights identical (within tolerance):", same)
 """
 
-layers_1 = [Layer(X_train.shape[0], 100, "relu", "glorot"),  Layer(100, 50, "tanh", "glorot"), Layer(50, 4, "identity", "glorot") ]
+layers_1 = [Layer(X_train_monk.shape[0], 16, "tanh", "glorot"), Layer(16, 1, "sigmoid", "glorot") ]
 #carico i pesi nei layer del modello 1
 
 """
@@ -143,9 +175,9 @@ for b,layer in zip(best_biases, layers_2):
     layer.set_bias(b)
 
 """
-model_1 = Model(eta=0.0001, alpha=0.8, lamb=1e-5, layers=layers_1, update="momentum", loss="mse", metric="mee", regularizer="l1")
+model_1 = Model(eta=1, alpha=0.95, lamb=1e-5, layers=layers_1, update="momentum", loss="binary_cross_entropy", metric="accuracy", regularizer="l1")
 
-#model_1.fit(8000, X_train, Y_train, X_test, Y_test, 400, plot=True)
+model_1.fit(10000, X_train_monk, Y_train_monk, X_val_monk, Y_val_monk, 400, plot=True)
 #model_2 = Model(eta=0.0001, alpha=0.8, lamb=1e-5, layers=layers_2, update="momentum", loss="mse", metric="mee", regularizer="l1")
 
 #carico i pesi nel modello 1

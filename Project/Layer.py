@@ -83,9 +83,10 @@ class Layer:
         self.o = self.activation.forward(self.net)
         return self.o
 
-    def backward_pass(self, delta, input, m):
+    def backward_pass(self, delta, input, m, skip_activation=False):
         ## Restituisce il deltaW e il d_bias del layer corrente e il delta del layer precedente
-        delta = delta * self.activation.backward(self.net)
+        if not skip_activation:
+            delta = delta * self.activation.backward(self.net)
         self.dW = (1 / m) * delta.dot(input.T)
         self.d_bias = (1 / m) * np.sum(delta , axis = 1 , keepdims = True)
         self.delta = ((self.W).T).dot(delta)
