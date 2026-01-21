@@ -1,6 +1,11 @@
 import numpy as np
 
 class ActivationFunctions():
+    
+    """
+    Abstract class for activation functions
+    
+    """
 
     def forward(self, x):
         raise NotImplementedError 

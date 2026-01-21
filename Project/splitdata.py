@@ -8,15 +8,15 @@ class split_my_data:
     
 class cup_split(split_my_data):
 
-    def split(self, data, k):
+    def split(self, data, k , val_percentage):
         result = []
-        
         n_data = data.shape[0]
-        validation_split_percentage = 100 / k
-        print(f"Validation split percentage: {validation_split_percentage}")
+        n_val_data = math.ceil(n_data * val_percentage )
         
-        n_val_data = math.ceil(n_data / k )
-
+        if ( 1 / k) != (val_percentage): 
+            print("Attenzione: il validation set nelle k-fold non copre tutti i dati")
+            
+            
         for i in range(k) :
             train = []
             val = data[(i*n_val_data) :  ((i + 1) * n_val_data)].T
@@ -37,14 +37,27 @@ class cup_split(split_my_data):
             
         return result
     
+    def input_label_split(self,train,val):
+        X_train = train[1:13]
+        Y_train = train[13:17]
+        X_val = val[1:13]
+        Y_val = val[13:17]
+        
+        return X_train , Y_train , X_val , Y_val
+        
 class monk_split:
     
-    def split(self, data, k):
+    #restituisce un'array di tuple: ogni tupla è un (train,val) split di una fold
+    def split(self, data, k , val_percentage):
         result = []
         n_data = data.shape[0]
-        validation_split_percentage = 100 / k
-        n_val_data = math.ceil(n_data / k )
-        print(f"Validation split percentage: {validation_split_percentage}")
+
+        if ( 1 / k) != (val_percentage): 
+            print("Attenzione: il validation set nelle k-fold non copre tutti i dati")
+
+
+        n_val_data = math.ceil(n_data * val_percentage )
+
         category_sizes = [3, 3, 2, 3, 4, 2]
         Y_monk = data[:, 0]          # labels
         X_monk = data[:, 1:]       # attributes
@@ -63,7 +76,7 @@ class monk_split:
             first_train = data[: (i*n_val_data)].T
             second_train = data[((i + 1) * n_val_data) : ].T
             
-            print(val.shape , first_train.shape , second_train.shape)
+            
             
             
             if i == 0:
@@ -83,3 +96,27 @@ class monk_split:
                 encoded_features.append(one_hot)
 
             return np.hstack(encoded_features)
+    
+    def input_label_split(self,train,val):
+        X_train = train[1:17]
+        Y_train = train[17:18]
+        X_val = val[1:17]
+        Y_val = val[17:18]
+        
+        return X_train , Y_train , X_val , Y_val 
+        
+
+
+"""
+data_monk = np.loadtxt("/Users/Filippo/Desktop/NiralNeuorcFromScretch-jaeger/datasets/monks-1.train", dtype=int, usecols=range(7))
+
+splitter = monk_split()
+
+splitting = splitter.split(data_monk , 5)
+
+print(len(splitting))
+
+x_y_split = splitter.input_label_split(splitting[0][0], splitting[0][1])
+
+print(x_y_split[0].shape , x_y_split[1].shape)
+"""

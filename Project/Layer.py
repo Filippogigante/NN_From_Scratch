@@ -54,6 +54,20 @@ class Layer:
 
         self.W, self.b, self.vW, self.vb  = self.initializer.init_weights()
 
+    def forward_pass(self, input):
+        self.net = (self.W).dot(input) + self.b
+        self.o = self.activation.forward(self.net)
+        return self.o
+
+    def backward_pass(self, delta, input, m, skip_activation=False):
+        ## Restituisce il deltaW e il d_bias del layer corrente e il delta del layer precedente
+        if not skip_activation:
+            delta = delta * self.activation.backward(self.net)
+        self.dW = (1 / m) * delta.dot(input.T)
+        self.d_bias = (1 / m) * np.sum(delta , axis = 1 , keepdims = True)
+        self.delta = ((self.W).T).dot(delta)
+        return self.delta
+    
     def get_weights(self):
         return self.W
     
@@ -78,20 +92,6 @@ class Layer:
     def set_vb(self, vb):
         self.vb = vb
 
-    def forward_pass(self, input):
-        self.net = (self.W).dot(input) + self.b
-        self.o = self.activation.forward(self.net)
-        return self.o
-
-    def backward_pass(self, delta, input, m, skip_activation=False):
-        ## Restituisce il deltaW e il d_bias del layer corrente e il delta del layer precedente
-        if not skip_activation:
-            delta = delta * self.activation.backward(self.net)
-        self.dW = (1 / m) * delta.dot(input.T)
-        self.d_bias = (1 / m) * np.sum(delta , axis = 1 , keepdims = True)
-        self.delta = ((self.W).T).dot(delta)
-        return self.delta
-    
     def get_deltas(self):
         return self.dW, self.d_bias
     

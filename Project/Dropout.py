@@ -3,11 +3,13 @@ from Layer import *
 
 class Dropout():
     def __init__(self, rate: float):
+        
         """
         :param rate: probability of dropping a neuron (0 < rate < 1)
         """
         if rate <= 0 or rate >= 1:
             raise ValueError("Dropout rate must be in (0, 1)")
+        
         self.type = "dropout"
         self.rate = rate
         self.mask = None

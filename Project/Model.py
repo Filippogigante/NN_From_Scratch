@@ -25,7 +25,8 @@ class Model:
             "mse": mse,
             "mee": mee,
             "binary_cross_entropy" : binary_cross_entropy,
-            "accuracy" : accuracy
+            "accuracy" : accuracy,
+            "error" : error
         }
 
         regularizer_map = {
@@ -100,8 +101,6 @@ class Model:
 
     def fit(self, epochs, x, y, x_val, y_val, batch_size, plot = False):
 
-        #folder_path = r"\Users\filippo\Desktop\data_weights"
-        #file_name = "best_weights.pkl"
         full_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\best_weights.pkl"
 
         n_train = x.shape[1]
@@ -115,6 +114,8 @@ class Model:
         threshold = 0.8
 
         for epoch in range(epochs+1):
+            
+            #Train the model using all batches
             for k in range(0, n_train, batch_size):
                 X_batch = X_loc[:, k : k + batch_size]
                 Y_batch = Y_loc[:, k : k + batch_size]
@@ -127,18 +128,23 @@ class Model:
                # X_loc = X_loc[:, indices]
                 #Y_loc = Y_loc[:, indices]
 
+            #Val loss is the total validation loss for each batch
             val_loss = 0
+
             for l in range(0, n_val, batch_size):
+
                 X_batch = x_val[:, l : l + batch_size]
                 Y_batch = y_val[:, l : l + batch_size]
                 val_loss += self.evaluate(X_batch, Y_batch)
 
+            #We compute the average val loss of the various batches
             if batch_size < n_val:
                 avg_val_loss = val_loss / (n_val / batch_size)
             else:
                 avg_val_loss = val_loss
                 
-            if ((epoch % 5) == 0):
+                
+            if ((epoch % 500) == 0):
                 #self.eta *= 0.95
                 #self.update.set_eta(self.eta)
                 o = self.forward_pass_model(x)
@@ -157,7 +163,7 @@ class Model:
                 "weights": self.all_layers_weights(),
                 "bias": self.all_layers_bias()
                 }
-                with open(full_path, 'wb') as file:  # 'wb' sta per Write Binary
+                with open(full_path, 'wb') as file:  
                     pickle.dump(data_to_save, file)
 
             o = self.forward_pass_model(x)
@@ -175,7 +181,12 @@ class Model:
             
         return best_val_loss, Flag
     
+    
+        
     def evaluate(self, x, y):
+        """
+        Computes the error of the model, given the input data x
+        """
         o = self.forward_pass_model(x)
         e = self.metric.forward_loss(o, y)
         return e

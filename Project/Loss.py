@@ -59,11 +59,9 @@ class accuracy(loss):
         y_pred: shape (1, n_samples)
         """
     
-        
-
         # Convert probabilities to 0/1
         y_pred_labels = (y_pred >= threshold).astype(int)
-
+        
         # Ensure shapes match
         if y_pred_labels.shape != y_true.shape:
             y_pred_labels = y_pred_labels.reshape(y_true.shape)
@@ -76,3 +74,22 @@ class accuracy(loss):
         # Divide by number of samples to get fraction
         accuracy = correct / y_true.shape[1]  # y_true.shape[1] = number of samples
         return accuracy
+
+
+class error(loss):
+    def forward_loss(self,  y_pred,y_true, threshold=0.5):
+        """
+        Computes binary accuracy
+        y_true: shape (1, n_samples)
+        y_pred: shape (1, n_samples)
+        """
+       
+        y_pred_labels = (y_pred >= threshold).astype(int)
+        
+        if y_pred_labels.shape != y_true.shape:
+            y_pred_labels = y_pred_labels.reshape(y_true.shape)
+       
+        correct = (y_pred_labels == y_true).sum()
+
+        accuracy = correct / y_true.shape[1]  
+        return 1-accuracy
