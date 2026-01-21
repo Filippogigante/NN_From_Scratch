@@ -5,6 +5,7 @@ import itertools
 import shutil
 import math
 from Logger import *
+from splitdata import *
 
 class GridSearch():
 
@@ -81,16 +82,27 @@ class HoldoutGridSearch():
 
 
 class KfoldGridSearch():
-    def __init__(self, param_grid):
+    def __init__(self, param_grid, data_type):
         self.param_grid = param_grid
     
+        split_map = {
+            "cup": cup_split,        
+            "monk": monk_split,
+        }
+
+        if isinstance(data_type, str):
+            try:
+                self.split = split_map[data_type.lower()]() 
+            except KeyError:
+                raise ValueError(f"Data type '{data_type}' non supportata. Usa: {list(split_map.keys())}")
+        else:
+            raise BaseException("data type must be a string")
+
     def split_dataset(self, data_training, k):
     
         result = []
         
         n_data = data_training.shape[0]
-        
-        validation_split = (n_data / k)
         validation_split_percentage = 100 / k
         print(f"Validation split percentage: {validation_split_percentage}")
         
@@ -123,7 +135,7 @@ class KfoldGridSearch():
 
     def compute_grid_search(self, data_training, k):
         
-        data = self.split_dataset(data_training , k)
+        data = self.split.split(data_training)
         old_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\best_weights.pkl"
         new_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\global_best_weights.pkl"
         keys = self.param_grid.keys()

@@ -4,16 +4,15 @@ from Model import *
 from Error_plots import *
 from Dropout import *
 
-#data = np.loadtxt(r"\Users/nicol/Desktop/Universita/ML/cup_data/ML-CUP25-TR.csv", delimiter=",", skiprows=1)
-#data_test = np.loadtxt(r"/Users/nicol/Desktop/Universita/ML/cup_data/ML-CUP25-TS.csv", delimiter=",", skiprows=1)
-#data_monk = np.loadtxt(r"/Users/filippo/desktop/NiralNeuorcFromScretch-jaeger/datasets/monks-1.train", dtype=int, usecols=range(7))
+#data = np.loadtxt(r"\Users\nicol\Desktop\Universita\ML\cup_data\ML-CUP25-TR.csv", delimiter=",", skiprows=1)
+#data_test = np.loadtxt(r"\Users\nicol\Desktop\Universita\ML\cup_data\ML-CUP25-TS.csv", delimiter=",", skiprows=1)
+#data_monk = np.loadtxt(r"\Users\filippo\desktop\NiralNeuorcFromScretch-jaeger\datasets\monks-1.train", dtype=int, usecols=range(7))
 
 
-data_monk = np.loadtxt(r"/Users/filippo/desktop/NiralNeuorcFromScretch-jaeger/datasets/monks-2.train", dtype=int, usecols=range(7))
+data_monk = np.loadtxt(r"C:\Users\nicol\Desktop\Universita\ML\monk_data\monks-3.train", dtype=int, usecols=range(7))
 
 
 ## Monk-managemenent
-category_sizes_monk2 = [3, 3, 2, 3, 3, 2]
 category_sizes = [3, 3, 2, 3, 4, 2]
 def one_hot_encode(X, category_sizes):
     encoded_features = []
@@ -151,7 +150,7 @@ same = all(
 print("Weights identical (within tolerance):", same)
 """
 
-layers_1 = [Layer(X_train_monk.shape[0], 16, "tanh", "glorot"), Layer(16, 1, "sigmoid", "glorot") ]
+layers_1 = [Layer(X_train_monk.shape[0], 8, "relu", "glorot"), Layer(8, 1, "sigmoid", "glorot") ]
 #carico i pesi nei layer del modello 1
 
 """
