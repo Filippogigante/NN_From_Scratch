@@ -1,15 +1,14 @@
 import numpy as np
-import pickle
-from Model import *
-from Error_plots import *
-from Dropout import *
+from model import *
+from error_plots import *
+from dropout import *
 
 #data = np.loadtxt(r"\Users\nicol\Desktop\Universita\ML\cup_data\ML-CUP25-TR.csv", delimiter=",", skiprows=1)
 #data_test = np.loadtxt(r"\Users\nicol\Desktop\Universita\ML\cup_data\ML-CUP25-TS.csv", delimiter=",", skiprows=1)
 #data_monk = np.loadtxt(r"\Users\filippo\desktop\NiralNeuorcFromScretch-jaeger\datasets\monks-1.train", dtype=int, usecols=range(7))
 
 
-data_monk = np.loadtxt(r"C:\Users\nicol\Desktop\Universita\ML\monk_data\monks-3.train", dtype=int, usecols=range(7))
+data_monk = np.loadtxt(r"c:\Users\franc\OneDrive\Desktop\Università\ML\NN_From_Scratch\datasets\monk\monks-3.train", dtype=int, usecols=range(7))
 
 
 ## Monk-managemenent

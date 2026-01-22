@@ -5,16 +5,21 @@ class split_my_data:
 
     def split(self, data, k):
         return NotImplementedError
-    
+
+
 class cup_split(split_my_data):
 
     def split(self, data, k , val_percentage):
+        '''
+        This function splits the dataset into train and validation in k different splits each with a fixed validation percentage
+        To obtain a single split set k=1 
+        '''
         result = []
         n_data = data.shape[0]
         n_val_data = math.ceil(n_data * val_percentage )
         
-        if ( 1 / k) != (val_percentage): 
-            print("Attenzione: il validation set nelle k-fold non copre tutti i dati")
+        if (1 / k) != (val_percentage): 
+            print("Attention: validation set in k-fold doesn't cover all the data")
             
             
         for i in range(k) :
@@ -44,17 +49,22 @@ class cup_split(split_my_data):
         Y_val = val[13:17]
         
         return X_train , Y_train , X_val , Y_val
-        
+
+
 class monk_split:
     
     #restituisce un'array di tuple: ogni tupla è un (train,val) split di una fold
     def split(self, data, k , val_percentage):
+        '''
+        Returns an array of tuples: each tuple is a (train, validation) split (there are k tuples)
+        This function splits the dataset into train and validation in k different splits each with a fixed validation percentage
+        To obtain a single split set k=1 
+        '''
         result = []
         n_data = data.shape[0]
 
         if ( 1 / k) != (val_percentage): 
-            print("Attenzione: il validation set nelle k-fold non copre tutti i dati")
-
+            print("Attention: validation set in k-fold doesn't cover all the data")
 
         n_val_data = math.ceil(n_data * val_percentage )
 
@@ -75,9 +85,6 @@ class monk_split:
             val = data[(i*n_val_data) :  ((i + 1) * n_val_data)].T
             first_train = data[: (i*n_val_data)].T
             second_train = data[((i + 1) * n_val_data) : ].T
-            
-            
-            
             
             if i == 0:
                 train = second_train
@@ -105,8 +112,6 @@ class monk_split:
         
         return X_train , Y_train , X_val , Y_val 
         
-
-
 """
 data_monk = np.loadtxt("/Users/Filippo/Desktop/NiralNeuorcFromScretch-jaeger/datasets/monks-1.train", dtype=int, usecols=range(7))
 

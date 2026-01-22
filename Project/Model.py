@@ -1,12 +1,9 @@
-import numpy as np
-from Loss import *
-from Update import *
-from Layer import *
-from Error_plots import *
-from Regularize import *
+from loss import *
+from update import *
+from layer import *
+from error_plots import *
+from regularize import *
 from utilities import save_model
-
-
 
 class Model:
     def __init__(self, eta, alpha, lamb, layers, update, loss, validation_loss, metrics, regularizer):
@@ -17,6 +14,7 @@ class Model:
         self.metrics = []
         self.metric_names = metrics
         self.loss_name = loss
+        print(metrics)
 
         update_map = {
             "standard": lambda: std_update(self.eta),
@@ -118,14 +116,12 @@ class Model:
             if (layer.get_type() != "dropout"):
                 self.update.update(layer, self.regularizer)
             
-
     def fit(self, epochs, x, y, x_val, y_val, batch_size, eta_descent=False, plot=False):
         '''
         This method trains the model on all the data, and computes the validation error, 
         and automatically saves the weights of the best model on the validation error.
         '''
-
-        path_model_best_weights = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\best_weights.pkl"
+        path_model_best_weights = r"c:\Users\franc\OneDrive\Desktop\Università\ML\NN_From_Scratch\data_weights\best_weights.pkl"
         patience = 5
         patience_count = 0
         n_train = x.shape[1]
@@ -207,7 +203,6 @@ class Model:
                 err_metric[i].append(error)
                 val_metric[i].append(validation)
 
-        
             val.append(epoch_avg_val_loss) # This is still the array to keep track of the validation_loss to check the noisiness.
 
         if not threshold_flag:
@@ -219,8 +214,6 @@ class Model:
             
         return model_best_val_loss, threshold_flag
     
-    
-        
     def evaluate(self, x, y, metric):
         """
         Computes the error of the model, given the input data x, using a specific metric.

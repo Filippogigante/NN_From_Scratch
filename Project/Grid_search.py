@@ -1,13 +1,8 @@
 import numpy as np
-import shutil
-import os 
-import pickle
-from Model import *
-from Error_plots import *
-import itertools
-from Logger import *
-import time
-from GridSearch import *
+from model import *
+from error_plots import *
+from logger import *
+from gridsearch import *
 
 #folder_path = r"\Users\filippo\Desktop\data_weights" #cartella dove vengono memorizzati i pesi 
 #original_file = "best_weights.pkl"
@@ -18,7 +13,7 @@ sys.stdout = logger()
 #old_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\best_weights.pkl"
 #new_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\global_best_weights.pkl"
 #data = np.loadtxt(r"C:\Users\nicol\Desktop\Universita\ML\cup_data\ML-CUP25-TR.csv", delimiter=",", skiprows=1)
-data_monk1 = np.loadtxt(r"C:\Users\nicol\Desktop\Universita\ML\monk_data\monks-2.train", dtype=int, usecols=range(7))
+data_monk1 = np.loadtxt(r"c:\Users\franc\OneDrive\Desktop\Università\ML\NN_From_Scratch\datasets\monk\monks-1.train", dtype=int, usecols=range(7))
 
 
 param_grid_cup = {"eta": [0.0005, 0.001, 0.005],
@@ -56,23 +51,26 @@ param_grid_monk1 = {"eta": [0.01, 0.05, 0.1, 0.5],
                  }
 """
 
-param_grid_monk1 = {"eta": [0.1],
+param_grid_monk1 = {"eta": [0.1, 0.5],
                 "loss" : ["binary_cross_entropy"],
-                "metric" : ["error"],
-                "alpha": [0.95],
-                "batch_size": [ 128],
-                "regularizer":["l1"],
-                "update": ["momentum"],
-                "initializer": ["glorot"],
-                "activation": ["relu",],
+                "metric" : [["mse"]],
+                "alpha": [0.8, 0.95],
+                "batch_size": [20, 100],
+                "regularizer":["l1", "l2"],
+                "update": ["standard", "momentum"],
+                "initializer": ["he", "glorot"],
+                "activation": ["relu", "tanh"],
                 "hidden_architecture": [
-                    (8,),                
+                    (4,),
+                    (8,),
+                    (16,),
+                    (8, 4),           
                 ],
-                "epochs": [2000]
+                "epochs": [1000]
                  }
 
 
 final_gridsearch = KfoldGridSearch(param_grid_monk1, "monk")
-final_gridsearch.compute_grid_search(data_monk1, k=5 , val_percentage= 0.2)
+final_gridsearch.compute_grid_search(data_monk1, k=5, val_percentage= 0.2)
 
 

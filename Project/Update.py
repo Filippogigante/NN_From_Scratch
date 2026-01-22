@@ -1,5 +1,4 @@
-import numpy as np
-from Regularize import *
+from regularize import *
 
 class update_params:
     def update(self, x, y):
@@ -7,6 +6,7 @@ class update_params:
     
     def set_eta(self, x):
         raise NotImplementedError 
+
 
 class std_update(update_params):
     def __init__(self, eta):
@@ -27,6 +27,7 @@ class std_update(update_params):
     
     def set_eta(self, new_eta):
         self.eta = new_eta
+
     
 class momentum_update(update_params):
     def __init__(self, eta, alpha):

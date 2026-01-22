@@ -1,5 +1,5 @@
 import numpy as np
-from Layer import *
+from layer import *
 
 class Dropout():
     def __init__(self, rate: float):

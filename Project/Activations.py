@@ -4,7 +4,6 @@ class ActivationFunctions():
     
     """
     Abstract class for activation functions
-    
     """
 
     def forward(self, x):
@@ -21,7 +20,8 @@ class relu(ActivationFunctions):
     
     def backward(self, x):
         return ((x > 0).astype(float))
-    
+
+
 class tanh(ActivationFunctions):
 
     def forward(self, x):
@@ -29,7 +29,8 @@ class tanh(ActivationFunctions):
     
     def backward(self, x):
         return 1 - self.forward(x) ** 2.0
-    
+
+
 class sigmoid(ActivationFunctions):
 
     def forward(self, x):
@@ -38,6 +39,7 @@ class sigmoid(ActivationFunctions):
     def backward(self, x):
         return self.forward(x) * (1 - self.forward(x))
     
+
 class softmax(ActivationFunctions):
 
     def forward(self, x):
@@ -45,6 +47,7 @@ class softmax(ActivationFunctions):
     
     def backward(self, x):
         return self.forward(x) * (1 - self.forward(x))
+ 
     
 class identity(ActivationFunctions):
 

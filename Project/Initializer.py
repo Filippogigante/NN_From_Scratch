@@ -5,6 +5,7 @@ class Initializer_weights:
     def init_weights(self):
         raise NotImplementedError
 
+
 class std_initializer(Initializer_weights):
     def __init__(self, dim_output, dim_input):
         
@@ -28,6 +29,7 @@ class std_initializer(Initializer_weights):
         
         return self.W, self.b, self.vW, self.vb
     
+
 class gaussian_initializer(Initializer_weights):
 
     def __init__(self, dim_output, dim_input):
@@ -49,7 +51,8 @@ class gaussian_initializer(Initializer_weights):
         self.vb = np.zeros_like(self.b)
             
         return self.W, self.b, self.vW, self.vb
-    
+
+
 class he_initializer(Initializer_weights):
     def __init__(self, dim_output, dim_input):
         self.dim_input = dim_input
@@ -71,6 +74,7 @@ class he_initializer(Initializer_weights):
         self.vb = np.zeros_like(self.b)
             
         return self.W, self.b, self.vW, self.vb    
+
 
 class glorot_initializer(Initializer_weights):
     

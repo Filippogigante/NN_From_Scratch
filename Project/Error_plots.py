@@ -1,4 +1,3 @@
-import numpy as np
 import matplotlib.pyplot as plt
 
 class error_plot:
@@ -10,7 +9,7 @@ class error_plot:
 class default_plot(error_plot):
     '''
     The class implements a method to plot
-    the Training errors, for each epoch.
+    the Training errors, for each epoch
     '''
     def plot(self, err):
         plt.figure('Error plot')
@@ -20,10 +19,11 @@ class default_plot(error_plot):
         plt.grid()
         plt.show()
 
+
 class val_err_plot(error_plot):
     '''
     The class implements a method to plot both 
-    the Validation and the Training errors, for each epoch.
+    the Validation and the Training errors, for each epoch
     '''
     def plot(self, val, err, metric_names):
         '''
@@ -44,7 +44,7 @@ class val_err_plot(error_plot):
         else:
             n = len(val)
 
-        fig, axes = plt.subplots(nrows=1, ncols=n, figsize=(15, 5))
+        fig, axes = plt.subplots(nrows=1, ncols=n, figsize=(15, 5), squeeze=False)
         axes_flat = axes.flatten()
         for i in range(n):
             axes_flat[i].plot(err[i], c='red', linestyle='-', label='Training')

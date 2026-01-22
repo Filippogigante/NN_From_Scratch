@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 class loss:
     '''
@@ -8,12 +7,12 @@ class loss:
     and a method to compute the first delta of the backward propagation
     '''
     def forward_loss(self, x, y):
-        
         raise NotImplementedError
     
     def backward_loss(self, x, y):
         raise NotImplementedError
-        
+
+
 class mse(loss):
 
     def forward_loss(self, output, target):
@@ -21,7 +20,8 @@ class mse(loss):
     
     def backward_loss(self, output, target):
         return output - target
-    
+
+
 class mee(loss):
 
     def forward_loss(self, output, target):
@@ -33,11 +33,9 @@ class mee(loss):
     
 class binary_cross_entropy(loss):
     
-    
-    def forward_loss(self, output, target, margin):
+    def forward_loss(self, output, target):
         
         return np.mean(-np.sum(target * np.log(output) + (1 - target) * np.log(1 - output), axis=1))
-        
         
     def backward_loss(self, output, target):
         """
@@ -50,7 +48,8 @@ class binary_cross_entropy(loss):
         :param y: target in the dataset
         """
         return output - target
-        
+
+
 class binary_accuracy(loss):
 
     def forward_loss(self,  y_pred,y_true, threshold=0.5):
@@ -59,7 +58,6 @@ class binary_accuracy(loss):
         y_true: shape (1, n_samples)
         y_pred: shape (1, n_samples)
         """
-    
         # Convert probabilities to 0/1
         y_pred_labels = (y_pred >= threshold).astype(int)
         
@@ -70,8 +68,6 @@ class binary_accuracy(loss):
         # Count correct predictions
         correct = (y_pred_labels == y_true).sum()
         
-
-
         # Divide by number of samples to get fraction
         accuracy = correct / y_true.shape[1]  # y_true.shape[1] = number of samples
         return accuracy
@@ -84,7 +80,6 @@ class binary_error(loss):
         y_true: shape (1, n_samples)
         y_pred: shape (1, n_samples)
         """
-       
         y_pred_labels = (y_pred >= threshold).astype(int)
         
         if y_pred_labels.shape != y_true.shape:

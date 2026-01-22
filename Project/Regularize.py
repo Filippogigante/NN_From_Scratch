@@ -1,6 +1,9 @@
 import numpy as np
 
 class regularizer:
+    '''
+    Abstract class to add the Tichonov regularization to the model
+    '''
     def __init__(self, lamb):
         self.lamb = lamb
         pass
@@ -10,7 +13,8 @@ class regularizer:
 
     def bp(self, W):
         return NotImplementedError
-    
+
+   
 class l1(regularizer):
     def __init__(self, lamb):
         super().__init__(lamb)
@@ -20,6 +24,7 @@ class l1(regularizer):
     
     def bp(self, W):
         return self.lamb * np.sign(W)
+
     
 class l2(regularizer):
     def __init__(self, lamb):
