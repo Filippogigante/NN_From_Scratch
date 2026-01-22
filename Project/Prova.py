@@ -150,7 +150,7 @@ same = all(
 print("Weights identical (within tolerance):", same)
 """
 
-layers_1 = [Layer(X_train_monk.shape[0], 8, "relu", "glorot"), Layer(8, 1, "sigmoid", "glorot") ]
+layers_1 = [Layer(X_train_monk.shape[0], 6, "relu", "glorot"), Layer(6, 1, "sigmoid", "glorot") ]
 #carico i pesi nei layer del modello 1
 
 """
@@ -174,9 +174,10 @@ for b,layer in zip(best_biases, layers_2):
     layer.set_bias(b)
 
 """
-model_1 = Model(eta=1, alpha=0.95, lamb=1e-5, layers=layers_1, update="momentum", loss="binary_cross_entropy", metric="accuracy", regularizer="l1")
+model_1 = Model(eta=0.1, alpha=0.95, lamb=1e-5, layers=layers_1, update="momentum", loss="binary_cross_entropy", validation_loss="binary_error", metrics=["binary_error", "binary_accuracy", "mse"], regularizer="l1")
 
-model_1.fit(10000, X_train_monk, Y_train_monk, X_val_monk, Y_val_monk, 400, plot=True)
+model_1.fit(10000, X_train_monk, Y_train_monk, X_val_monk, Y_val_monk, 64, plot=True)
+model_1.summary()
 #model_2 = Model(eta=0.0001, alpha=0.8, lamb=1e-5, layers=layers_2, update="momentum", loss="mse", metric="mee", regularizer="l1")
 
 #carico i pesi nel modello 1

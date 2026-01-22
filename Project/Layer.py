@@ -5,10 +5,6 @@ from Initializer import *
 
 class Layer:
 
-    """def repr(self):
-        return "classe"
-        """
-
     def __init__(self, dim_input, dim_output, activation, initializer):
 
         self.dim_input = dim_input
@@ -55,12 +51,18 @@ class Layer:
         self.W, self.b, self.vW, self.vb  = self.initializer.init_weights()
 
     def forward_pass(self, input):
+        '''
+        Method to compute the forward pass of the layer.
+        '''
         self.net = (self.W).dot(input) + self.b
         self.o = self.activation.forward(self.net)
         return self.o
 
     def backward_pass(self, delta, input, m, skip_activation=False):
-        ## Restituisce il deltaW e il d_bias del layer corrente e il delta del layer precedente
+        '''
+        Method to compute the delta of the weights and of the biases for the current layer.
+        The function returns the delta that will be passed to the previous layer.
+        '''
         if not skip_activation:
             delta = delta * self.activation.backward(self.net)
         self.dW = (1 / m) * delta.dot(input.T)

@@ -10,8 +10,6 @@ from Logger import *
 from splitdata import *
 
 def create_layers(params, dataset, X_train):
-    
-
 
     current_arch = params["hidden_architecture"]
     n_layers = len(current_arch)
@@ -57,3 +55,8 @@ def create_layers(params, dataset, X_train):
         
         
     return layers
+
+def save_model(data, path):
+
+    with open(path, 'wb') as file:  
+        pickle.dump(data, file)

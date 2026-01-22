@@ -34,9 +34,9 @@ class HoldoutGridSearch():
             raise BaseException("activation must be a string")
     
     
-    def compute_grid_search(self, data , k , val_percentage):
+    def compute_grid_search(self, data, k, val_percentage):
         
-        data = self.dataset.split(data, k , val_percentage)
+        data = self.dataset.split(data, k, val_percentage)
         X_train , Y_train , X_val , Y_val = self.dataset.input_label_split(data[0] , data[1])
         
         old_path = r"\Users\nicol\Desktop\Universita\ML\repo\data_weights\best_weights.pkl"
@@ -100,7 +100,7 @@ class KfoldGridSearch():
 
     def compute_grid_search(self, data_training, k, val_percentage):
         
-        #split the data into training and validation
+        # Split the data into training and validation
         data = self.dataset.split(data_training , k , val_percentage)
         
         old_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\best_weights.pkl"
@@ -122,26 +122,25 @@ class KfoldGridSearch():
             time.sleep(1)
             
             for combo in combinations:
-                    
-                    
-                    params = dict(zip(keys, combo))
+   
+                params = dict(zip(keys, combo))
+                layers = create_layers(params, self.dataset , X_train)
+                model = Model(eta=params["eta"], alpha=params["alpha"], lamb=1e-5, layers=layers, update=params["update"], loss=params["loss"], metric=params["metric"], regularizer=params["regularizer"])
+                model_best_val_loss, threshold_flag = model.fit(params["epochs"], X_train, Y_train, X_val, Y_val, params["batch_size"], plot = True)
 
-                    current_arch = params["hidden_architecture"]
-                    layers = create_layers(params, self.dataset , X_train)
-                    model = Model(eta=params["eta"], alpha=params["alpha"], lamb=1e-5, layers=layers, update=params["update"], loss=params["loss"], metric=params["metric"], regularizer=params["regularizer"])
-                    best_val_loss, Flag = model.fit(params["epochs"], X_train, Y_train, X_val, Y_val, params["batch_size"], plot = True)
-                    
-                    if Flag:
-                        print("\n=======================================================================================")
-                        continue
+                # If the current model had a noisy validation trend, it gets discarded. We pass to the next comfiguration.
+                if threshold_flag:
+                    print("\n=======================================================================================")
+                    continue
 
-                    if best_val_loss < global_best_val_loss:
-                        global_best_val_loss = best_val_loss
-                        best_params = params
-                        shutil.copy(old_path, new_path)
-                        print("\n=======================================================================================")
-                        print(f"--> Nuova configurazione migliore trovata! Validation Loss: {global_best_val_loss:.2f}")
-                        print("\n=======================================================================================")
+                # If the current model's best validation loss is the best one, we save this model weights and update the global_best_val_loss.
+                if model_best_val_loss < global_best_val_loss:
+                    global_best_val_loss = model_best_val_loss
+                    best_params = params
+                    shutil.copy(old_path, new_path)
+                    print("\n=======================================================================================")
+                    print(f"--> New best configuration found! Validation Loss: {global_best_val_loss:.2f}")
+                    print("\n=======================================================================================")
                         
                     
 

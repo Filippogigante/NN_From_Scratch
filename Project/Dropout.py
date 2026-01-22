@@ -24,14 +24,13 @@ class Dropout():
         return x * self.mask
 
     def backward_pass(self, delta: np.ndarray, input, m) -> np.ndarray:
-        if not self.training:
-            return delta
-
         return delta * self.mask
 
-    def set_training(self, training: bool):
-        self.training = training
+    def set_training(self):
+        self.training = True
 
-    
+    def set_validation(self):
+        self.training = False
+
     def get_type(self):
         return self.type

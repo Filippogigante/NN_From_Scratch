@@ -2,8 +2,13 @@ import numpy as np
 import math
 
 class loss:
-
+    '''
+    Abstract class for the loss functions.
+    It implements a forward method to compute the loss at the end of the network,
+    and a method to compute the first delta of the backward propagation
+    '''
     def forward_loss(self, x, y):
+        
         raise NotImplementedError
     
     def backward_loss(self, x, y):
@@ -30,12 +35,7 @@ class binary_cross_entropy(loss):
     
     
     def forward_loss(self, output, target, margin):
-        """
-        Computes BCE loss
         
-        this forward loss is not used in the training loop (only needs the backward),
-        it's used to compute the error of our model and plotted in the graph
-        """
         return np.mean(-np.sum(target * np.log(output) + (1 - target) * np.log(1 - output), axis=1))
         
         
@@ -51,7 +51,8 @@ class binary_cross_entropy(loss):
         """
         return output - target
         
-class accuracy(loss):
+class binary_accuracy(loss):
+
     def forward_loss(self,  y_pred,y_true, threshold=0.5):
         """
         Computes binary accuracy
@@ -76,7 +77,7 @@ class accuracy(loss):
         return accuracy
 
 
-class error(loss):
+class binary_error(loss):
     def forward_loss(self,  y_pred,y_true, threshold=0.5):
         """
         Computes binary accuracy

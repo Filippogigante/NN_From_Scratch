@@ -18,7 +18,7 @@ sys.stdout = logger()
 #old_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\best_weights.pkl"
 #new_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\global_best_weights.pkl"
 #data = np.loadtxt(r"C:\Users\nicol\Desktop\Universita\ML\cup_data\ML-CUP25-TR.csv", delimiter=",", skiprows=1)
-data_monk1 = np.loadtxt("/Users/Filippo/Desktop/NiralNeuorcFromScretch-jaeger/datasets/monks-2.train", dtype=int, usecols=range(7))
+data_monk1 = np.loadtxt(r"C:\Users\nicol\Desktop\Universita\ML\monk_data\monks-2.train", dtype=int, usecols=range(7))
 
 
 param_grid_cup = {"eta": [0.0005, 0.001, 0.005],
