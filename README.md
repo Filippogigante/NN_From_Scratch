@@ -1,1 +1,1 @@
-# NiralNeuorcFromScretch
+# NN_From_Scratch
