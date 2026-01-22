@@ -121,7 +121,7 @@ class Model:
         This method trains the model on all the data, and computes the validation error, 
         and automatically saves the weights of the best model on the validation error.
         '''
-        path_model_best_weights = r"c:\Users\franc\OneDrive\Desktop\Università\ML\NN_From_Scratch\data_weights\best_weights.pkl"
+        path_model_best_weights = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\best_weights.pkl"
         patience = 5
         patience_count = 0
         n_train = x.shape[1]

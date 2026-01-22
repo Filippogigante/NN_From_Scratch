@@ -37,8 +37,8 @@ class HoldoutGridSearch():
         data = self.dataset.split(data, 1, val_percentage)
         X_train , Y_train , X_val , Y_val = self.dataset.input_label_split(data[0][0] , data[0][1])
         
-        old_path = r"c:\Users\franc\OneDrive\Desktop\Università\ML\NN_From_Scratch\data_weights\best_weights.pkl"
-        new_path = r"c:\Users\franc\OneDrive\Desktop\Università\ML\NN_From_Scratch\data_weights\global_best_weights.pkl"
+        old_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\best_weights.pkl"
+        new_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\global_best_weights.pkl"
         keys = self.param_grid.keys()
         values = self.param_grid.values()
         combinations = list(itertools.product(*values))
@@ -51,7 +51,7 @@ class HoldoutGridSearch():
         for combo in combinations:
             params = dict(zip(keys, combo))
             layers = create_layers(params, self.dataset , X_train)
-            model = Model(eta=params["eta"], alpha=params["alpha"], lamb=1e-5, layers=layers, update=params["update"], loss=params["loss"], validation_loss="mse", metrics=params["metric"], regularizer=params["regularizer"])
+            model = Model(eta=params["eta"], alpha=params["alpha"], lamb=0, layers=layers, update=params["update"], loss=params["loss"], validation_loss="mse", metrics=params["metric"], regularizer=params["regularizer"])
             start = time.perf_counter()
             best_val_loss, Flag = model.fit(params["epochs"], X_train, Y_train, X_val, Y_val, params["batch_size"], plot=False)
             end = time.perf_counter()
@@ -101,8 +101,8 @@ class KfoldGridSearch():
         # Split the data into training and validation
         data = self.dataset.split(data_training , k , val_percentage)
         
-        old_path = r"c:\Users\franc\OneDrive\Desktop\Università\ML\NN_From_Scratch\data_weights\best_weights.pkl"
-        new_path = r"c:\Users\franc\OneDrive\Desktop\Università\ML\NN_From_Scratch\data_weights\global_best_weights.pkl"
+        old_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\best_weights.pkl"
+        new_path = r"C:\Users\nicol\Desktop\Universita\ML\repo\data_weights\global_best_weights.pkl"
         keys = self.param_grid.keys()
         values = self.param_grid.values()
         combinations = list(itertools.product(*values))
@@ -123,7 +123,7 @@ class KfoldGridSearch():
    
                 params = dict(zip(keys, combo))
                 layers = create_layers(params, self.dataset , X_train)
-                model = Model(eta=params["eta"], alpha=params["alpha"], lamb=1e-5, layers=layers, update=params["update"], loss=params["loss"], validation_loss="mse", metrics=params["metric"], regularizer=params["regularizer"])
+                model = Model(eta=params["eta"], alpha=params["alpha"], lamb=0, layers=layers, update=params["update"], loss=params["loss"], validation_loss="mse", metrics=params["metric"], regularizer=params["regularizer"])
                 start = time.perf_counter()
                 model_best_val_loss, threshold_flag = model.fit(params["epochs"], X_train, Y_train, X_val, Y_val, params["batch_size"], plot=False)
                 end = time.perf_counter()
